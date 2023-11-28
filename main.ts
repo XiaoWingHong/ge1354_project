@@ -9,7 +9,7 @@ let mode: string[] = ["voltage", "current", "resistance"]
 let chosen_mode = "none"
 let hold_mode = false
 const space = "                              "
-const delay = 300
+const delay = 500
 
 function menu() {
     OLED12864_I2C.clear()
