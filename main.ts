@@ -13,28 +13,31 @@ const delay = 300
 
 function menu() {
     OLED12864_I2C.clear()
-    OLED12864_I2C.showString(6, 0, "V", 1)
-    OLED12864_I2C.showString(6, 1, "mA", 1)
-    OLED12864_I2C.showString(6, 2, "ohm", 1)
+    OLED12864_I2C.showString(3, 0,  " <MODE> ", 0)
+    basic.pause(50)
+    OLED12864_I2C.showString(6, 1, "V", 1)
+    basic.pause(50)
+    OLED12864_I2C.showString(6, 2, "mA", 1)
+    basic.pause(50)
+    OLED12864_I2C.showString(6, 3, "ohm", 1)
+    basic.pause(50)
     show_arrow()
 }
 
 function clear_arrow() {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 1; i < 4; i++) {
         OLED12864_I2C.showString(2, i, "   ", 1)
     }
 }
 
 function show_arrow() {
-    let tmp = 0
     if (mode[0] == "voltage") {
-        tmp = 0
+        OLED12864_I2C.showString(2, 1, "->", 1)
     } else if (mode[0] == "current") {
-        tmp = 1
+        OLED12864_I2C.showString(2, 2, "->", 1)
     } else if (mode[0] == "resistance") {
-        tmp = 2
+        OLED12864_I2C.showString(2, 3, "->", 1)
     }
-    OLED12864_I2C.showString(2, tmp, "->", 1)
 }
 
 function voltage_mode() {
@@ -44,14 +47,15 @@ function voltage_mode() {
         if (!hold_mode) {
             OLED12864_I2C.showString(0, 0, "    ", 1)
             let Vout = pins.analogReadPin(AnalogPin.P0) * Vin / ADC_resolution * (R2 + R1) / R2
+            Vout = Math.roundWithPrecision(Vout, 2)
             if (Vout > 0.05) {
-                OLED12864_I2C.showString(0, 1, "  " + Math.roundWithPrecision(Vout, 2) + "V" + space, 1)
+                OLED12864_I2C.showString(0, 1, "  " + Vout + "V" + space, 1)
             } else {
                 OLED12864_I2C.showString(0, 1, "no connection" + space, 1)
             }
             basic.pause(delay)
         } else {
-            OLED12864_I2C.showString(0, 0, "hold", 1)
+            OLED12864_I2C.showString(0, 0, "HOLD", 0)
             basic.pause(0) //weird bug, without running something after OLED12864_I2C.showString the program will frezze
         }
     }
@@ -65,14 +69,15 @@ function current_mode() {
         if (!hold_mode) {
             OLED12864_I2C.showString(0, 0, "    ", 1)
             let Vout = pins.analogReadPin(AnalogPin.P1) / ADC_resolution * Vin
+            let Current_mA = Math.roundWithPrecision(Vout / R3 * 1000, 2)
             if (Vout > 0.005) {
-                OLED12864_I2C.showString(0, 1, "  " + Math.roundWithPrecision(Vout / R3 * 1000, 2) + "mA" + space, 1)
+                OLED12864_I2C.showString(0, 1, "  " + Current_mA + "mA" + space, 1)
             } else {
                 OLED12864_I2C.showString(0, 1, "no connection" + space, 1)
             }
             basic.pause(delay)
         } else {
-            OLED12864_I2C.showString(0, 0, "hold", 1)
+            OLED12864_I2C.showString(0, 0, "HOLD", 0)
             basic.pause(0)
         }
     }
@@ -86,14 +91,15 @@ function resistance_mode() {
         if (!hold_mode) {
             OLED12864_I2C.showString(0, 0, "    ", 1)
             let Vout = pins.analogReadPin(AnalogPin.P2) / ADC_resolution * Vin
+            let Resistance = Math.roundWithPrecision(Vout * R4 / (Vin - Vout), 2)
             if (Vout < 3.15) {
-                OLED12864_I2C.showString(0, 1, "  " + Math.roundWithPrecision(Vout * R4 / (Vin - Vout), 2) + "ohm" + space, 1)
+                OLED12864_I2C.showString(0, 1, "  " + Resistance + "ohm" + space, 1)
             } else {
                 OLED12864_I2C.showString(0, 1, "no connection" + space, 1)
             }
             basic.pause(delay)
         } else {
-            OLED12864_I2C.showString(0, 0, "hold", 1)
+            OLED12864_I2C.showString(0, 0, "HOLD", 0)
             basic.pause(0)
         }
 
