@@ -1,7 +1,7 @@
 const R1 = 9100  //voltmeter_R1
 const R2 = 3900  //voltmeter_R2
 const R3 = 1 //ohmmeter
-const R4 = 20000 //ammeter
+const R4 = 1000 //ammeter
 const Vin = 3.3
 const ADC_resolution = 1023
 
@@ -13,7 +13,7 @@ const delay = 500
 
 function menu() {
     OLED12864_I2C.clear()
-    OLED12864_I2C.showString(3, 0,  " <MODE> ", 0)
+    OLED12864_I2C.showString(3, 0, " <MODE> ", 0)
     basic.pause(50)
     OLED12864_I2C.showString(6, 1, "V", 1)
     basic.pause(50)
